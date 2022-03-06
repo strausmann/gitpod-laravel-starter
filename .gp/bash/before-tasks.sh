@@ -6,9 +6,9 @@
 # before-tasks.sh
 # Description:
 # Tasks that should be run every time the workspace is created or started.
-# 
+#
 # Notes:
-# Gitpod currently does not persist files in the home directory so we must write them 
+# Gitpod currently does not persist files in the home directory so we must write them
 # in everytime the workspace starts. This is done in the 'before' task in .gitpod.yml
 
 # Load logger
@@ -18,7 +18,7 @@
 # Some rake tasks are dynamic and depend on the configuration in starter.ini
 if [[ $(bash .gp/bash/utils.sh parse_ini_value starter.ini github-changelog-generator install) ]]; then
   msg="Writing rake tasks"
-  if bash .gp/bash/init-rake-tasks.sh; then 
+  if bash .gp/bash/init-rake-tasks.sh; then
     log_silent "SUCCESS: $msg"
   else
     log -e "ERROR: $msg"
@@ -50,7 +50,7 @@ if [[ -n $GPG_KEY && -n $GPG_KEY_ID ]]; then
   git config --global user.signingkey "$GPG_KEY_ID" &&
   git config commit.gpgsign true
   ec=$?
-  if [[ $ec -eq 0 ]]; then 
+  if [[ $ec -eq 0 ]]; then
     log_silent "SUCCESS: $msg"
     # Change the git email if the user needs it (ensures the commit is marked as 'Verified')
     if [[ -n $GPG_MATCH_GIT_TO_EMAIL ]]; then
@@ -68,7 +68,7 @@ if [[ -n $GPG_KEY && -n $GPG_KEY_ID ]]; then
       echo -e ""trusted-key 0x"$GPG_KEY_ID""\n$(cat $gpg_conf_path)" > "$gpg_conf_path" &&
       gpg --list-keys &> /dev/null
       ec=$?
-      if [[ $ec -eq 0 ]]; then 
+      if [[ $ec -eq 0 ]]; then
         log_silent "SUCCESS: $msg"
       else
         log -e "ERROR: $msg"
@@ -87,7 +87,7 @@ if [[ -n $INTELEPHENSE_LICENSEKEY ]]; then
   mkdir -p "$HOME/intelephense" &&
   echo "$INTELEPHENSE_LICENSEKEY" > "$HOME/intelephense/licence.txt" &&
   ec=$?
-  if [[ $ec -eq 0 ]]; then 
+  if [[ $ec -eq 0 ]]; then
     log "SUCCESS: $msg"
   else
     log -e "ERROR: $msg"
@@ -97,8 +97,17 @@ fi
 # Restore files marked as persistant such as workspace-init.log
 # See persist_file in bash/helpers.sh for how the system works
 # Keep this block at the bottom of the file so that any logging from this
-# script is only written to file upon initialization! Otherwise workspace-init.log 
+# script is only written to file upon initialization! Otherwise workspace-init.log
 # will get written to from this script upon every workspace restart.
 if [[ $(bash .gp/bash/helpers.sh is_inited) == 1 ]]; then
   bash .gp/bash/helpers.sh restore_persistent_files "$GITPOD_REPO_ROOT"
 fi
+
+# Change Owner for $HOME/.config/composer and $HOME/.config/composer/*
+sudo chown gitpod:gitpod $HOME/.config/composer $HOME/.config/composer/*
+
+# Create $HOME/.config/composer/vendor/bin
+mkdir -p $HOME/.config/composer/vendor/bin
+
+# Export bin path
+echo "export PATH="$PATH:$HOME/.config/composer/vendor/bin:$GITPOD_REPO_ROOT/vendor/bin"" >> ~/.bashrc.d/99-composer
