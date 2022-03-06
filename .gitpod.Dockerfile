@@ -52,5 +52,8 @@ RUN bash -c ". /tmp/update-composer.sh" && rm /tmp/update-composer.sh
 # Scaffold the Laravel project
 RUN bash -c ". /tmp/scaffold-project.sh" && rm /tmp/scaffold-project.sh
 
+# Set composer pathg
+RUN export PATH="$PATH:$HOME/.config/composer/vendor/bin:$GITPOD_REPO_ROOT/vendor/bin"
+
 # Force the docker image to build by incrementing this value
-ENV INVALIDATE_CACHE=232
+ENV INVALIDATE_CACHE=234
