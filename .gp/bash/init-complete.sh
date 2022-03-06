@@ -6,7 +6,7 @@
 # init-complete.sh
 # Description:
 # Code to be run just once at the very end of workspace initialization.
-# 
+#
 # Notes:
 # Always call this file last from the 'init' command in .gitpod.yml
 
@@ -18,6 +18,8 @@ allow_mixed_web=$(bash .gp/bash/utils.sh parse_ini_value starter.ini laravel all
 [[ $allow_mixed_web != 0 ]] && bash .gp/bash/directives/allow-mixed-web.sh
 
 # Add Workspace/Project composer bin folder to $PATH
+sudo chown gitpod:gitpod $HOME/.config/composer
+mkdir -p $HOME/.config/composer/vendor/bin
 export PATH="$PATH:$HOME/.config/composer/vendor/bin:$GITPOD_REPO_ROOT/vendor/bin"
 
 # Cleanup
