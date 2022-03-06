@@ -109,5 +109,5 @@ sudo chown gitpod:gitpod $HOME/.config/composer $HOME/.config/composer/*
 # Create $HOME/.config/composer/vendor/bin
 mkdir -p $HOME/.config/composer/vendor/bin
 
-# Export bin path
-echo "export PATH="$PATH:$HOME/.config/composer/vendor/bin:$GITPOD_REPO_ROOT/vendor/bin"" >> ~/.bashrc.d/99-composer
+# Export composer bin path
+export PATH="$PATH:$HOME/.config/composer/vendor/bin:$GITPOD_REPO_ROOT/vendor/bin"
